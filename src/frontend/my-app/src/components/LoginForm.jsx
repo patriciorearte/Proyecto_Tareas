@@ -26,10 +26,11 @@ const LoginForm = () => {
       // Enviar los datos al backend para realizar el login
       const response = await axios.post('http://localhost:3000/api/users/login', formData);
       console.log('Login exitoso:', response.data);
-
-      // Aquí puedes guardar el token en localStorage, sessionStorage o un estado global si es necesario
+  
+      // Guardar el token y userId en localStorage
       localStorage.setItem('authToken', response.data.token); // Suponiendo que el backend devuelve un token
-
+      localStorage.setItem('userId', response.data.userId); // Guardamos el userId también
+  
       // Redirigir al dashboard después de iniciar sesión
       navigate('/dashboard');
     } catch (error) {
@@ -40,7 +41,6 @@ const LoginForm = () => {
       }
     }
   };
-
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', padding: 2 }}>
       <Typography variant="h5">Iniciar sesión</Typography>

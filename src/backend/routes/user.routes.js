@@ -63,21 +63,14 @@ router.post('/login', async (req, res) => {
         const result = await pool.query('SELECT * FROM usuarios WHERE email = ?', [email]);
 
         // 'result' debe ser un arreglo de objetos, pero en este caso parece que es un solo objeto
-          // Verifica la estructura exacta
-
-        // Si result no es un arreglo o está vacío, significa que no encontramos el usuario
         if (!result || result.length === 0) {
             return res.status(400).json({ message: 'El usuario no existe.' });
         }
 
         const user = result[0];  // Ahora 'result' es un arreglo, tomamos el primer usuario
 
-          // Verifica el objeto del usuario
-
         // Verificamos la contraseña
         const passwordMatch = await bcrypt.compare(password, user.password);
-         // Verifica si las contraseñas coinciden
-
         if (!passwordMatch) {
             return res.status(400).json({ message: 'Contraseña incorrecta.' });
         }
@@ -89,7 +82,8 @@ router.post('/login', async (req, res) => {
             { expiresIn: '1h' }
         );
 
-        res.status(200).json({ message: 'Login exitoso', token });
+        // Respondemos con el token y el userId
+        res.status(200).json({ message: 'Login exitoso', token, userId: user.id });
 
     } catch (error) {
         console.error('Error en el login:', error);
