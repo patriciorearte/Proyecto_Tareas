@@ -14,7 +14,13 @@ const Dashboard = () => {
   const userId = localStorage.getItem("userId"); // Obtener el ID del usuario logueado
 
   useEffect(() => {
-    axios.get('http://localhost:3000/api/tasks')
+    const userId = localStorage.getItem("userId");
+    if (!userId) {
+      console.error("No hay usuario autenticado");
+      return;
+    }
+  
+    axios.get(`http://localhost:3000/api/tasks?userId=${userId}`)
       .then(response => {
         const tasksData = Array.isArray(response.data) ? response.data : [response.data];
         setTasks(tasksData);
