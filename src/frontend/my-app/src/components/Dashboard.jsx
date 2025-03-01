@@ -60,22 +60,30 @@ const Dashboard = () => {
     };
   
     axios.post("http://localhost:3000/api/tasks", taskData)
-      .then(response => {
-        if (response.data && response.data.id) {
-          // Agregar la nueva tarea con su ID al estado `tasks`
-          setTasks(prevTasks => [...prevTasks, response.data]);
-        } else {
-          console.error("Respuesta inesperada del backend:", response.data);
-        }
-        setNewTask({ title: "", description: "" });
-        setSnackbarMessage("Tarea creada con éxito");
-        setOpenSnackbar(true);
-      })
-      .catch(error => {
-        console.error("Error al crear tarea:", error.response ? error.response.data : error.message);
-        setSnackbarMessage(`Error: ${error.response ? error.response.data.message : error.message}`);
-        setOpenSnackbar(true);
-      });
+    .then(response => {
+      if (response.data && response.data.id) {
+        const newTaskWithData = {
+          id: response.data.id,
+          title: newTask.title,  // Usamos los valores que ya tenemos
+          description: newTask.description,
+          user_id: parseInt(userId),
+          created_at: new Date().toISOString() // Opcional, solo si quieres agregar la fecha
+        };
+  
+        setTasks(prevTasks => [...prevTasks, newTaskWithData]);
+      } else {
+        console.error("Respuesta inesperada del backend:", response.data);
+      }
+  
+      setNewTask({ title: "", description: "" });
+      setSnackbarMessage("Tarea creada con éxito");
+      setOpenSnackbar(true);
+    })
+    .catch(error => {
+      console.error("Error al crear tarea:", error.response ? error.response.data : error.message);
+      setSnackbarMessage(`Error: ${error.response ? error.response.data.message : error.message}`);
+      setOpenSnackbar(true);
+    });
   };
 
   
@@ -107,29 +115,32 @@ const Dashboard = () => {
 
       {/* Lista de tareas */}
       <Grid container spacing={2}>
-        {tasks.length > 0 ? (
-          tasks.map(task => (
-            <Grid item xs={12} sm={6} md={4} key={task.id}>
-              <Card sx={{ padding: 2, backgroundColor: "#e3f2fd" }}>
-                <CardContent>
-                  <h3>{task.title}</h3>
-                  <p>{task.description}</p>
-                  <Box display="flex" justifyContent="space-between">
-                    <IconButton color="primary" onClick={() => handleEditTask(task)}>
-                      <EditIcon />
-                    </IconButton>
-                    <IconButton color="secondary" onClick={() => handleDeleteTask(task.id)}>
-                      <DeleteIcon />
-                    </IconButton>
-                  </Box>
-                </CardContent>
-              </Card>
-            </Grid>
-          ))
-        ) : (
-          <p style={{ textAlign: "center", width: "100%" }}>No hay tareas disponibles</p>
-        )}
+  {tasks.length > 0 ? (
+    tasks.map(task => (
+      <Grid item xs={12} sm={6} md={4} key={task.id}>
+        <Card sx={{ padding: 2, backgroundColor: "#e3f2fd" }}>
+          <CardContent>
+            {/* Agrega un console.log aquí */}
+            {console.log("Task en render:", task)}
+
+            {/* Muestra los valores o indica si están vacíos */}
+            <h3>{task.title || "Sin título"}</h3>
+            <p>{task.description || "Sin descripción"}</p>
+
+            <IconButton onClick={() => handleEditTask(task)} color="primary">
+              <EditIcon />
+            </IconButton>
+            <IconButton onClick={() => handleDeleteTask(task.id)} color="secondary">
+              <DeleteIcon />
+            </IconButton>
+          </CardContent>
+        </Card>
       </Grid>
+    ))
+  ) : (
+    <p style={{ textAlign: "center", width: "100%" }}>No hay tareas disponibles</p>
+  )}
+</Grid>
 
       <Snackbar
         open={openSnackbar}
