@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Button, TextField, IconButton, Card, CardContent, Container, Grid, Box, Snackbar } from '@mui/material';
-import EditIcon from '@mui/icons-material/Edit';
-import DeleteIcon from '@mui/icons-material/Delete';
+
 import TaskList from './TaskList';
 
 
@@ -95,21 +94,21 @@ const Dashboard = () => {
 
   
   return (
-    <Container maxWidth="md">
-      <h2 style={{ textAlign: 'center' }}>Dashboard</h2>
+    <Container maxWidth="lg">
+      <h2 style={{ textAlign: 'center' }}>Lista de Tareas</h2>
       
       {/* Formulario para crear tarea */}
       <Box my={3} display="flex" flexDirection="column" alignItems="center" style={{ backgroundColor: '#f5f5f5', padding: '20px', borderRadius: '8px' }}>
-        <h3>Create Task</h3>
+        <h3>Crear Tarea</h3>
         <TextField
-          label="Title"
+          label="Titulo"
           value={newTask.title}
           onChange={(e) => setNewTask({ ...newTask, title: e.target.value })}
           style={{ marginBottom: '10px' }}
           fullWidth
         />
         <TextField
-          label="Description"
+          label="Descripcion"
           value={newTask.description}
           onChange={(e) => setNewTask({ ...newTask, description: e.target.value })}
           style={{ marginBottom: '20px' }}
@@ -121,7 +120,9 @@ const Dashboard = () => {
       </Box>
 
       {/* Lista de tareas */}
-      <TaskList tasks={tasks} onEdit={handleEditTask} onDelete={handleDeleteTask} />
+      <Box mt={4}>
+        <TaskList tasks={tasks} onEdit={handleEditTask} onDelete={handleDeleteTask} />
+      </Box>
 
       <Snackbar
         open={openSnackbar}
@@ -132,5 +133,4 @@ const Dashboard = () => {
     </Container>
   );
 };
-
 export default Dashboard;
