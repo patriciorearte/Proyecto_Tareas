@@ -3,6 +3,7 @@ import axios from 'axios';
 import { Button, TextField, IconButton, Card, CardContent, Container, Grid, Box, Snackbar } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
+import TaskList from './TaskList';
 
 
 const Dashboard = () => {
@@ -120,33 +121,7 @@ const Dashboard = () => {
       </Box>
 
       {/* Lista de tareas */}
-      <Grid container spacing={2}>
-  {tasks.length > 0 ? (
-    tasks.map(task => (
-      <Grid item xs={12} sm={6} md={4} key={task.id}>
-        <Card sx={{ padding: 2, backgroundColor: "#e3f2fd" }}>
-          <CardContent>
-            {/* Agrega un console.log aquí */}
-            {console.log("Task en render:", task)}
-
-            {/* Muestra los valores o indica si están vacíos */}
-            <h3>{task.title || "Sin título"}</h3>
-            <p>{task.description || "Sin descripción"}</p>
-
-            <IconButton onClick={() => handleEditTask(task)} color="primary">
-              <EditIcon />
-            </IconButton>
-            <IconButton onClick={() => handleDeleteTask(task.id)} color="secondary">
-              <DeleteIcon />
-            </IconButton>
-          </CardContent>
-        </Card>
-      </Grid>
-    ))
-  ) : (
-    <p style={{ textAlign: "center", width: "100%" }}>No hay tareas disponibles</p>
-  )}
-</Grid>
+      <TaskList tasks={tasks} onEdit={handleEditTask} onDelete={handleDeleteTask} />
 
       <Snackbar
         open={openSnackbar}
