@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Button, TextField, IconButton, Card, CardContent, Container, Grid, Box, Snackbar } from '@mui/material';
-
+import {jwtDecode} from 'jwt-decode';
 import TaskList from './TaskList';
 
 
@@ -14,25 +14,33 @@ const Dashboard = () => {
   const userId = localStorage.getItem("userId"); // Obtener el ID del usuario logueado
 
   useEffect(() => {
-    const token = localStorage.getItem("authToken");  // Obtener el token desde localStorage con la clave correcta
+    const token = localStorage.getItem("authToken");  // Obtener el token desde localStorage
     console.log('Token recibido:', token);  // Verifica si el token está presente
+
     if (!token) {
       console.error("No hay token de autenticación");
       return;
     }
-  
-    // Realizar la solicitud pasando el token en los encabezados
-    axios.get('http://localhost:3000/api/tasks/44', {
+
+    // Decodificar el token para obtener el ID del usuario
+    const decodedToken = jwtDecode(token);  // Sin ".default"
+    const userId = decodedToken.id;  // Obtener el ID del usuario
+
+    // Realizar la solicitud pasando el token en los encabezados y el ID del usuario en la URL
+    axios.get(`http://localhost:3000/api/tasks/user/${userId}`, {
       headers: {
         'Authorization': `Bearer ${token}`  // Agregar el token en el encabezado Authorization
       }
     })
       .then(response => {
         const tasksData = Array.isArray(response.data) ? response.data : [response.data];
-        setTasks(tasksData);
+        setTasks(tasksData);  // Guardar las tareas en el estado
       })
-      .catch(error => console.error('Error fetching tasks:', error));
-  }, []);
+      .catch(error => {
+        console.error('Error fetching tasks:', error);  // Manejo de errores
+      });
+  }, []);   // El arreglo vacío asegura que solo se ejecute al cargar el componente
+
 
   const handleEditTask = (task) => {
     setEditingTask(task);

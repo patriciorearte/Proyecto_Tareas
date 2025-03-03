@@ -1,5 +1,6 @@
 import jwt from 'jsonwebtoken';
 
+
 export const verifyToken = (req, res, next) => {
     console.log("Encabezados recibidos:", req.headers); // Para debug
 
