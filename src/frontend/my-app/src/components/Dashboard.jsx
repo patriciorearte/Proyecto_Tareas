@@ -94,7 +94,7 @@ const Dashboard = () => {
 
   
   return (
-    <Container maxWidth="lg">
+    <Container>
       <h2 style={{ textAlign: 'center' }}>Lista de Tareas</h2>
       
       {/* Formulario para crear tarea */}
@@ -118,12 +118,12 @@ const Dashboard = () => {
           {editingTask ? "Update Task" : "Create Task"}
         </Button>
       </Box>
-
+  
       {/* Lista de tareas */}
       <Box mt={4}>
         <TaskList tasks={tasks} onEdit={handleEditTask} onDelete={handleDeleteTask} />
       </Box>
-
+  
       <Snackbar
         open={openSnackbar}
         autoHideDuration={3000}

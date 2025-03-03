@@ -4,9 +4,10 @@ import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { Typography } from '@mui/material';
 
+
 const TaskList = ({ tasks, onEdit, onDelete }) => {
     return (
-      <Grid2 container spacing={3} justifyContent="center" sx={{ marginTop: 3 }}>
+      <Grid2 container spacing={3} justifyContent="center" sx={{ marginTop: 3, width: '100%' }}>
         {tasks.length > 0 ? (
           tasks.map(task => (
             <Grid2 item xs={12} sm={6} md={4} lg={3} key={task.id}>

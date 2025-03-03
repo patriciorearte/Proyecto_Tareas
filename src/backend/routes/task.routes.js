@@ -3,17 +3,6 @@ import Task from "../models/task.models.js"; // Ajusta la importación
 
 const router = express.Router();
 
-// Obtener todas las tareas
-router.get("/", async (req, res) => {
-    try {
-        const tasks = await Task.getAll(); // Usa la función correcta
-        res.json(tasks);
-    } catch (error) {
-        console.error("Error al obtener tareas:", error);
-        res.status(500).json({ message: "Error en el servidor" });
-    }
-});
-
 // Obtener una tarea por ID
 router.get('/:id', async (req, res) => {
     try {
