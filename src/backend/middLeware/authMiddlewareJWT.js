@@ -1,16 +1,21 @@
 import jwt from 'jsonwebtoken';
 
 export const verifyToken = (req, res, next) => {
-    const token = req.header('Authorization')?.replace('Bearer ', '');  // Obtener el token de la cabecera Authorization
+    console.log("Encabezados recibidos:", req.headers); // Para debug
+
+    const authHeader = req.headers.authorization;
+const token = Array.isArray(authHeader) ? authHeader[0].split(" ")[1] : authHeader?.split(" ")[1];
+
+console.log('Token recibido:', token);  
 
     if (!token) {
         return res.status(401).json({ message: 'Acceso denegado, no se proporcionó un token.' });
     }
 
     try {
-        const decoded = jwt.verify(token, process.env.JWT_SECRET);  // Verificar el token
-        req.userId = decoded.id;  // Agregar el ID del usuario al objeto de la solicitud
-        next();  // Continuar con la siguiente función de middleware o ruta
+        const decoded = jwt.verify(token, process.env.JWT_SECRET);
+        req.user = { id: decoded.id };
+        next();
     } catch (error) {
         res.status(400).json({ message: 'Token inválido o expirado.' });
     }

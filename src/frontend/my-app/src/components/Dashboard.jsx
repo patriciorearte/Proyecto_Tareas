@@ -14,13 +14,19 @@ const Dashboard = () => {
   const userId = localStorage.getItem("userId"); // Obtener el ID del usuario logueado
 
   useEffect(() => {
-    const userId = localStorage.getItem("userId");
-    if (!userId) {
-      console.error("No hay usuario autenticado");
+    const token = localStorage.getItem("authToken");  // Obtener el token desde localStorage con la clave correcta
+    console.log('Token recibido:', token);  // Verifica si el token está presente
+    if (!token) {
+      console.error("No hay token de autenticación");
       return;
     }
   
-    axios.get(`http://localhost:3000/api/tasks?userId=${userId}`)
+    // Realizar la solicitud pasando el token en los encabezados
+    axios.get('http://localhost:3000/api/tasks/44', {
+      headers: {
+        'Authorization': `Bearer ${token}`  // Agregar el token en el encabezado Authorization
+      }
+    })
       .then(response => {
         const tasksData = Array.isArray(response.data) ? response.data : [response.data];
         setTasks(tasksData);

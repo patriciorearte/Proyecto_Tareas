@@ -1,25 +1,26 @@
 import express from "express";
 import Task from "../models/task.models.js"; // Ajusta la importación
-
+import { verifyToken } from '../middLeware/authMiddlewareJWT.js'
+import { pool } from '../db.js';
 const router = express.Router();
 
 // Obtener una tarea por ID
-router.get('/:id', async (req, res) => {
+router.get('/user/:id', verifyToken, async (req, res) => {
     try {
-      const taskId = req.params.id; // Captura el ID de la tarea desde la URL
-      const userId = req.user.id; // Asegúrate de que el userId esté disponible
+        const userId = req.params.id; // Captura el ID del usuario desde la URL
+        console.log('Buscando tareas para el usuario con ID:', userId);
 
-      // Realiza la consulta en la base de datos
-      const task = await pool.query('SELECT * FROM tasks WHERE id = ? AND userId = ?', [taskId, userId]);
+        // Consulta las tareas asociadas al userId
+        const tasks = await pool.query('SELECT * FROM tasks WHERE user_id = ?', [userId]);
 
-      if (!task || task.length === 0) {
-        return res.status(404).json({ message: 'Tarea no encontrada o no autorizada' });
-      }
+        if (!tasks || tasks.length === 0) {
+            return res.status(404).json({ message: 'No se encontraron tareas para este usuario.' });
+        }
 
-      res.status(200).json(task[0]); // Devuelve la tarea encontrada
+        res.status(200).json(tasks); // Devuelve todas las tareas encontradas
     } catch (error) {
-      console.error('Error al obtener tarea:', error); // Muestra el error completo
-      res.status(500).json({ message: 'Error en el servidor', error: error.message });
+        console.error('Error al obtener tareas:', error);
+        res.status(500).json({ message: 'Error en el servidor', error: error.message });
     }
 });
 // Crear una nueva tarea
